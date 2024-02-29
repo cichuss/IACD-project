@@ -40,6 +40,7 @@ class BST:
         header = " | ".join(variables) + " | Result"
         print(header)
         print("-" * len(header))
+        results = []
 
         # Generate all possible truth assignments and evaluate the expression for each
         for i in range(2 ** num_variables):
@@ -49,9 +50,19 @@ class BST:
                 truth_assignment[var] = bool(int(binary_str[j]))  # Assign truth values based on binary representation
 
             result = self.evaluate(self.root, truth_assignment)
+            results.append(result)
             # Print truth values and result
             values = [str(truth_assignment[var])[0] for var in variables]  # Convert boolean to 0 or 1
             print(" | ".join(values) + " | " + str(result))
+
+        unique_results = set(results)
+        if len(unique_results) == 1:
+            if True in unique_results:
+                print("Tautology.")
+            else:
+                print("Contradiction.")
+        else:
+            print("Contingency.")
 
     def nodes(self, elem):
         count = 0
