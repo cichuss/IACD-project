@@ -23,8 +23,9 @@ class BST:
         if elem.left is None and elem.right is None:
             # If the element is a variable, return its truth value from the truth assignment
             return truth_assignment[elem.value]
-
+        elem.value
         a = self.evaluate(elem.left, truth_assignment)
+        elem.value
         b = self.evaluate(elem.right, truth_assignment)
 
         return operation(a, b, elem.value)
@@ -32,7 +33,7 @@ class BST:
     def generate_truth_table(self):
         # Get the list of unique variables
         variables = list(self.variables)
-
+        variables.sort()
         num_variables = len(variables)
 
         # Print table header
@@ -62,3 +63,11 @@ class BST:
                 count += self.nodes(elem.right)
         return count
 
+    def inorder(self, elem=None):
+        if elem is None:
+            elem = self.root
+        if elem.left:
+            self.inorder(elem.left)
+        print(elem.value, end=' ')
+        if elem.right:
+            self.inorder(elem.right)

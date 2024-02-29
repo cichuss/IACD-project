@@ -6,11 +6,11 @@ def precedence(c):
     if c == '(':
         return 0
     if c == '!':
-        return 1
+        return 3
     if c == '&' or c == '|':
         return 2
     if c == '=' or c == '>':
-        return 3
+        return 1
     else:
         return -1
 
@@ -49,16 +49,17 @@ def create_rpn(formula):
 
 
 def create_tree(formula):
-    stos = []
+    stack = []
     for char in formula.split():
         if char in ('!', '|', '&', '=', '>'):
             n = Node(char)
-            n.right = stos.pop()
-            n.left = stos.pop()
-            stos.append(n)
+            if char != '!':
+                n.right = stack.pop()
+            n.left = stack.pop()
+            stack.append(n)
         else:
-            stos.append(Node(char))
-    return BST(stos.pop())
+            stack.append(Node(char))
+    return BST(stack.pop())
 
 
 if __name__ == "__main__":
@@ -66,6 +67,8 @@ if __name__ == "__main__":
         print("Input correct formula:")
         formula = input()
         rpn = create_rpn(formula)
+        print(rpn)
         tree = create_tree(rpn)
+        print(tree.inorder())
         tree.root.get_variables(tree.variables)
         tree.generate_truth_table()
