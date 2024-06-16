@@ -19,30 +19,37 @@ def is_operator(c):
     return c in ('!', '&', '|', '=', '>')
 
 
+def handle_operator_in_stack(stack, wyj, char):
+    while stack and is_operator(stack[-1]) and precedence(char) <= precedence(stack[-1]):
+        wyj += stack.pop() + ' '
+    stack.append(char)
+    return wyj
+
+def handle_char(stack, wyj, sb, char):
+    if char.isalpha():  # Handle operands (i.e., variables)
+        sb += char
+    else:
+        if sb:
+            wyj += sb + ' '  # Add the completed operand to the output
+            sb = ''
+        if char == '(':
+            stack.append(char)
+        elif char == ')':
+            while stack[-1] != '(':
+                wyj += stack.pop() + ' '
+            stack.pop()
+        elif is_operator(char):
+            wyj = handle_operator_in_stack(stack, wyj, char)
+    return wyj, sb
+
 def create_rpn(formula):
     stack = []
     sb = ''
     wyj = ''
     for char in formula:
-        if char.isalpha():
-            sb += char
-        else:
-            if sb:
-                wyj += sb + ' '
-                sb = ''
-            if char == '(':
-                stack.append(char)
-            if char == ')':
-                while stack[-1] != '(':
-                    wyj += stack.pop() + ' '
-                if stack[-1] == '(':
-                    stack.pop()
-            if is_operator(char):
-                while stack and is_operator(stack[-1]) and precedence(char) <= precedence(stack[-1]):
-                    wyj += stack.pop() + ' '
-                stack.append(char)
+        wyj, sb = handle_char(stack, wyj, sb, char)
     if sb:
-        wyj += sb + ' '
+        wyj += sb + ' '  # Add any remaining operand to the output
     while stack:
         wyj += stack.pop() + ' '
     return wyj
